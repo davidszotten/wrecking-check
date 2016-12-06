@@ -5,7 +5,15 @@ Check your [w]req(uirements).in
 
 For use in conjunction with `pip-tools <https://github.com/nvie/pip-tools>`_.
 
-Tries to find packages that are no longer top-level requirements. o
+Tries to find packages that are no longer top-level requirements.
+
+
+Install
+-------
+
+Install using ``pip``::
+
+    $ pip install git+https://github.com/davidszotten/wrecking-check@master
 
 
 Usage
