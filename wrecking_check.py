@@ -3,16 +3,15 @@ import os
 import os.path
 import sys
 
+from pip.req.req_file import parse_requirements
 import pkg_resources
 
 
 def name_module_map(req_file):
-    reqs = [
-        req.strip()
-        for req in open(req_file).readlines()
+    req_names = [
+        req.req.name
+        for req in parse_requirements(req_file, session='dummy')
     ]
-    # TODO: parse with pip?
-    req_names = [req.split('==')[0] for req in reqs]
 
     module_names = [
         list(

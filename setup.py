@@ -7,6 +7,9 @@ setup(
     author='David Szotten',
     url='http://github.com/davidszotten/wrecking_check',
     py_modules=['wrecking_check'],
+    install_requires=[
+        'pip',
+    ],
     entry_points={
         'console_scripts': [
             'wrecking-check=wrecking_check:main',
