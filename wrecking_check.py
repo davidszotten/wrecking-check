@@ -3,15 +3,34 @@ import os
 import os.path
 import sys
 
-from pip.req.req_file import parse_requirements
+from pip._internal.req.req_file import parse_requirements
 import pkg_resources
+import toml
+
+
+def read_requirements(filename):
+    names = [
+       req.req.name
+       for req in parse_requirements(filename, session='dummy')
+    ]
+    return names
+
+
+def read_pyproject(filename):
+    with open(filename) as handle:
+        pyproject = toml.load(handle)
+    names = [
+        name for name in pyproject['tool']['poetry']['dependencies']
+        if name != 'python'
+    ]
+    return names
 
 
 def name_module_map(req_file):
-    req_names = [
-        req.req.name
-        for req in parse_requirements(req_file, session='dummy')
-    ]
+    if req_file.endswith('.toml'):
+        req_names = read_pyproject(req_file)
+    else:
+        req_names = read_requirements(req_file)
 
     module_names = [
         list(
@@ -58,7 +77,7 @@ class Visitor(ast.NodeVisitor):
 
 def main():
     if len(sys.argv) < 3:
-        print "Usage: wrecking-check <requirements file> <path> [<path>, ...]"
+        print("Usage: wrecking-check <requirements file> <path> [<path>, ...]")
         sys.exit(1)
 
     req_file = sys.argv[1]
@@ -76,7 +95,7 @@ def main():
     name_map = name_module_map(req_file)
     for requirement_name, modules in name_map:
         if not any(module in visitor._modules for module in modules):
-            print requirement_name
+            print(requirement_name)
 
 
 if __name__ == '__main__':
